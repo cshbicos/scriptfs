@@ -527,6 +527,8 @@ int sfs_open(const char *path,struct fuse_file_info *fi) {
 #ifdef TRACE
 	fprintf(stderr,"sfs_open(%s)\n",path);
 #endif
+    
+        fprintf(stderr, "pid %d is reading\n", fuse_get_context()->pid );
 	int handle=0;
 	int typ=0;
 	char *relative=relative_path(path);
@@ -537,7 +539,7 @@ int sfs_open(const char *path,struct fuse_file_info *fi) {
 		handle=mkstemp(temp_filename);
 		if (handle<=0) {free(relative);return -errno;}
 		unlink(temp_filename);
-		proc->program->func(proc->program,relative,handle);
+		proc->program->func(proc->program,relative,handle, fuse_get_context()->pid);
 		typ=1;
 		fi->direct_io=1;	// Force use of FUSE read on this file and do not take into account size given by the stat function
 	} else {

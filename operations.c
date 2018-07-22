@@ -109,7 +109,7 @@ int test_program(PTest test,const char *file) {
 /********************************************/
 /*           EXECUTION FUNCTIONS            */
 /********************************************/
-int program_shell(PProgram program,const char *file,int fd) {
+int program_shell(PProgram program,const char *file,int fd, pid_t readingPID) {
 	char *tmpfil=temp_copy(file);
 	if (tmpfil==0) return -errno;
 	const char *args[]={tmpfil,0};
@@ -119,10 +119,15 @@ int program_shell(PProgram program,const char *file,int fd) {
 	return code;
 }
 
-int program_external(PProgram program,const char *file,int fd) {
+int program_external(PProgram program,const char *file,int fd, pid_t readingPID) {
 	// Create the array of arguments of the program by replacing the exclamation mark with the name of a file with the same content
 	// The actual file is not used because it may not be accessible for external programs since the host folder can be mounted over with the new file system. To prevent that case, the script file is copied in the temporary folder and this new file name is given as the argument of the external program at the location of the exclamation mark. The temporary file is deleted after the end of the procedure.
 	if (program->args!=0 && program->filearg!=0) *(program->filearg)=temp_copy(file);
+        
+        
+        if (program->args!=0 && program->readingPID!=0){
+            sprintf(*(program->readingPID), "%d", readingPID);
+        }
 	// If the program is a filter that requires standard input, add the name of the file in the arguments of the call to execute_program
 	const char *f=(program->filter && program->filearg==0)?file:0;
 	// Launch the program

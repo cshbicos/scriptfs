@@ -158,9 +158,10 @@ int test_program(PTest test,const char *file);
  * \param program Pointer to the Program structure from which the function is called. The structure holds data used to locate the executable and get its arguments.
  * \param file Path of the script file
  * \param fd Descriptor of the file on which the output of the program will be written. The file should already be opened and ready to accept input
+ * \param readingProgram the external program that is reading the file
  * \return Error code of the external program after its execution
  */
-int program_shell(PProgram program,const char *file,int fd);
+int program_shell(PProgram program,const char *file,int fd, pid_t readingProgram);
 
 /**
  * \brief Execute an external program and write its output on given file
@@ -169,9 +170,10 @@ int program_shell(PProgram program,const char *file,int fd);
  * \param program Pointer to the Program structure from which the function is called. The structure holds data used to locate the executable and get its arguments.
  * \param file Path of the file on which the program will be executed. The file will be the last argument of the line which invokes the external program
  * \param fd Descriptor of the file on which the output of the program will be written. The file should already be opened and ready to accept input
+ * \param readingProgram the external program that is reading the file
  * \return Error code of the external program after its execution
  */
-int program_external(PProgram program,const char *file,int fd);
+int program_external(PProgram program,const char *file,int fd, pid_t readingProgram);
 
 /********************************************/
 /*             OTHER OPERATIONS             */

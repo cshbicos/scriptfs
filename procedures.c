@@ -96,7 +96,7 @@ char *read_word(const char **str) {
  * \param args Pointer to an array of arguments, initialized by the function
  * \param filearg Pointer to a position in the array args, which represents the element that will be replaced by the name of the script file
  */
-void tokenize_command(const char *str,char **path,char ***args,char ***filearg) {
+void tokenize_command(const char *str,char **path,char ***args,char ***filearg, char ***readingPID) {
 	*path=0;
 	*filearg=0;
 	*args=0;
@@ -114,7 +114,15 @@ void tokenize_command(const char *str,char **path,char ***args,char ***filearg) 
 			(*args)[num]=0;
 			*filearg=*args+num;
 			++num;
+                        continue;
+		}else if((*args)[num]!=0 && (*args)[num][0]=='?' && (*args)[num][1]==0) {
+			free((*args)[num]);
+			(*args)[num]=(char*)malloc(sizeof(char)*15);
+			*readingPID=*args+num;
+			++num;
+                        continue;
 		}
+		
 		if ((*args)[num]!=0) ++num;
 	}
 	(*args)[num++]=0;
@@ -145,7 +153,7 @@ Program *get_program_from_string(const char *str) {
 	if (*str==0 || strncasecmp(str,"AUTO",4)==0) {	// Program is either a shell script or an executable that can be executed by itself
 		prog->func=&program_shell;
 	} else {	// The program is located by a path name
-		tokenize_command(str,&(prog->path),&(prog->args),&(prog->filearg));
+		tokenize_command(str,&(prog->path),&(prog->args),&(prog->filearg),&(prog->readingPID));
 		if (prog->path!=0) {
 			struct stat fileinfo;
 			if (!(stat(prog->path,&fileinfo)==0 && S_ISREG(fileinfo.st_mode) && access(prog->path,X_OK)==0)) {
@@ -202,7 +210,7 @@ Test *get_test_from_string(const char *str) {
 			test->compiled=reg;
 		}
 	} else {	// The program is located by a path name
-		tokenize_command(str,&(test->path),&(test->args),&(test->filearg));
+		tokenize_command(str,&(test->path),&(test->args),&(test->filearg),&(test->readingPID));
 		if (test->path!=0) {
 			struct stat fileinfo;
 			if (!(stat(test->path,&fileinfo)==0 && S_ISREG(fileinfo.st_mode) && access(test->path,X_OK)==0)) {
