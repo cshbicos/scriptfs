@@ -1,9 +1,9 @@
 #!/bin/bash
 
-killall scriptfs > /dev/null 2>&1
+umount ./mnt > /dev/null 2>&1
 
 if [ ! -d "./mnt/" ]; then
    mkdir mnt
 fi
 
-./scriptfs -p "/bin/bash ! ? $(pwd)/lib;" ./mirror/ ./mnt/
+./scriptfs -o allow_other -p "/bin/bash ! ? $(pwd)/lib;" ./mirror/ ./mnt/
