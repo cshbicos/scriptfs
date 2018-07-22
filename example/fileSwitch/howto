@@ -1,0 +1,19 @@
+Purpose of this example:
+
+  Depending on the calling programm, the file mirrored from ./mirror to ./mnt shows different content.
+  The setting which content to show depending on the calling program is maintaind in ./lib/mapping
+  Every time a new calling program wants the file, the first line is copied with the program information. 
+  Edit the mapping file to change mappings
+
+The exact use case:
+
+  The example fakes various os-release versions depending on the caller.
+  All that needs to be done is to symlink ./mnt/os-release to /etc/os-release.
+
+Disclaimer:
+  I'm not saying it's a good idea to do that for anything. At all. Ever.
+
+
+Howto use this:
+ 1. compile scriptfs in the parent folder
+ 2. copy the scritpfs executable in this folder and run ./startup

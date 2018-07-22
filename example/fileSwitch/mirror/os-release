@@ -1,0 +1,13 @@
+#!/bin/bash
+
+caller=$(cat /proc/$1/comm)
+
+file=$(cat $2/mapping | grep -oP "${caller} => \K.*")
+
+if [ -z "${file}" ]; then
+   file=$(cat $2/mapping | grep -oP "=> \K.*")
+   echo "${caller} => ${file}" >> $2/mapping
+fi
+cat $2/$file
+
+
